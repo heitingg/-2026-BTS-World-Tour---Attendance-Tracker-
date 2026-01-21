@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, ExternalLink, Plane, Train, MapPin, User, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, ExternalLink, Plane, Train, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
 import { CityData, BuyMethod } from '../types';
 import { getTransportOptions } from '../services/transportService';
 
@@ -8,6 +8,39 @@ interface CityDetailDrawerProps {
   city: CityData | null;
   onClose: () => void;
 }
+
+const getPersonColorClasses = (name: string) => {
+  switch (name.toUpperCase()) {
+    case 'IVY': return { 
+      bg: 'bg-purple-600', 
+      border: 'border-purple-500/30', 
+      ring: 'ring-purple-500/20', 
+      text: 'text-purple-300',
+      gradient: 'from-purple-600 to-purple-800'
+    };
+    case 'KHT': return { 
+      bg: 'bg-sky-500', 
+      border: 'border-sky-500/30', 
+      ring: 'ring-sky-500/20', 
+      text: 'text-sky-300',
+      gradient: 'from-sky-500 to-sky-700'
+    };
+    case 'YKT': return { 
+      bg: 'bg-pink-500', 
+      border: 'border-pink-500/30', 
+      ring: 'ring-pink-500/20', 
+      text: 'text-pink-300',
+      gradient: 'from-pink-500 to-pink-700'
+    };
+    default: return { 
+      bg: 'bg-gray-600', 
+      border: 'border-gray-500/30', 
+      ring: 'ring-gray-500/20', 
+      text: 'text-gray-300',
+      gradient: 'from-gray-600 to-gray-800'
+    };
+  }
+};
 
 const CityDetailDrawer: React.FC<CityDetailDrawerProps> = ({ city, onClose }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'attendees'>('info');
@@ -117,37 +150,43 @@ const CityDetailDrawer: React.FC<CityDetailDrawerProps> = ({ city, onClose }) =>
             </>
           ) : (
             <div className="space-y-4">
-              {city.attendees.map((person, i) => (
-                <div key={i} className={`glass p-5 rounded-2xl border transition-all ${person.wantToGo ? 'border-purple-500/30 ring-1 ring-purple-500/20' : 'opacity-50 grayscale'}`}>
-                  <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center font-bold">
-                        {person.name[0]}
+              {city.attendees.map((person, i) => {
+                const colors = getPersonColorClasses(person.name);
+                return (
+                  <div 
+                    key={i} 
+                    className={`glass p-5 rounded-2xl border transition-all ${person.wantToGo ? `${colors.border} ring-1 ${colors.ring}` : 'opacity-40 grayscale'}`}
+                  >
+                    <div className="flex justify-between items-center mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${colors.gradient} flex items-center justify-center font-bold text-white shadow-lg`}>
+                          {person.name[0]}
+                        </div>
+                        <div>
+                          <p className={`font-bold ${person.wantToGo ? 'text-white' : 'text-white/40'}`}>{person.name}</p>
+                          <p className="text-xs text-white/40 uppercase tracking-tighter">
+                            {person.wantToGo ? 'Attending' : 'Not Attending'}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-bold">{person.name}</p>
-                        <p className="text-xs text-white/40 uppercase tracking-tighter">
-                          {person.wantToGo ? 'Attending' : 'Not Attending'}
-                        </p>
-                      </div>
+                      {person.wantToGo && person.appliedPresale && (
+                        <CheckCircle2 size={20} className="text-green-400" />
+                      )}
                     </div>
-                    {person.appliedPresale && (
-                      <CheckCircle2 size={20} className="text-green-400" />
+                    
+                    {person.wantToGo && (
+                      <div className="grid grid-cols-2 gap-2 text-[10px] uppercase font-bold tracking-widest text-white/60">
+                        <div className={`p-2 bg-white/5 rounded border border-white/10 text-center ${person.buyMethod === BuyMethod.Daishua ? colors.text : ''}`}>
+                          Method: {person.buyMethod}
+                        </div>
+                        <div className={`p-2 bg-white/5 rounded border border-white/10 text-center ${person.gotAirTicket ? 'text-green-400' : ''}`}>
+                          Air: {person.gotAirTicket ? 'Ready' : 'Pending'}
+                        </div>
+                      </div>
                     )}
                   </div>
-                  
-                  {person.wantToGo && (
-                    <div className="grid grid-cols-2 gap-2 text-[10px] uppercase font-bold tracking-widest text-white/60">
-                      <div className="p-2 bg-white/5 rounded border border-white/10 text-center">
-                        Method: {person.buyMethod}
-                      </div>
-                      <div className="p-2 bg-white/5 rounded border border-white/10 text-center">
-                        Air: {person.gotAirTicket ? 'Ready' : 'Pending'}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
