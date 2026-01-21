@@ -1,21 +1,12 @@
 
 import React from 'react';
-import { Calendar, MapPin, Plane, Ticket } from 'lucide-react';
+import { Calendar, MapPin, Plane, Ticket, Users } from 'lucide-react';
 import { CityData, PresaleStatus, AirTicketStatus } from '../types';
 
 interface CityCardProps {
   city: CityData;
   onClick: (id: string) => void;
 }
-
-const getPersonColor = (name: string) => {
-  switch (name.toUpperCase()) {
-    case 'IVY': return 'bg-purple-600';
-    case 'KHT': return 'bg-sky-500';
-    case 'YKT': return 'bg-pink-500';
-    default: return 'bg-gray-600';
-  }
-};
 
 const CityCard: React.FC<CityCardProps> = ({ city, onClick }) => {
   const isTBC = city.status === 'TBC';
@@ -86,7 +77,7 @@ const CityCard: React.FC<CityCardProps> = ({ city, onClick }) => {
             {city.attendees.filter(a => a.wantToGo).map((a, i) => (
               <div 
                 key={i} 
-                className={`w-8 h-8 rounded-full ${getPersonColor(a.name)} border-2 border-[#050816] flex items-center justify-center text-[10px] font-bold shadow-lg shadow-black/50`}
+                className="w-8 h-8 rounded-full bg-purple-600 border-2 border-[#050816] flex items-center justify-center text-[10px] font-bold"
                 title={a.name}
               >
                 {a.name[0]}
