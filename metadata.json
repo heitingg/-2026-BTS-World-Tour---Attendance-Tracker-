@@ -1,0 +1,7 @@
+{
+  "name": "BTS 2026 World Tour Attendance Dashboard",
+  "description": "A high-performance interactive dashboard for tracking BTS 2026 world tour attendance, ticketing status, and travel logistics with a neon concert-themed UI.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
